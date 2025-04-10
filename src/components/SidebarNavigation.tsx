@@ -1,3 +1,7 @@
 export default function SidebarNavigation() {
-	return <></>;
+	return (
+		<>
+			<nav></nav>
+		</>
+	);
 }
