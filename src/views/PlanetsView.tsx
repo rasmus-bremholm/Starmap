@@ -1,4 +1,5 @@
 import SidebarNavigation from "../components/SidebarNavigation";
+import PlanetInfo from "../components/PlanetInfo";
 import styled from "styled-components";
 
 const MainGrid = styled.div`
@@ -11,7 +12,7 @@ export default function PlanetsView() {
 	return (
 		<MainGrid>
 			<SidebarNavigation />
-			<h1>PlanetsView</h1>
+			<PlanetInfo />
 		</MainGrid>
 	);
 }
