@@ -1,3 +1,7 @@
 export default function EditView() {
-	return <></>;
+	return (
+		<>
+			<h1>EditView</h1>
+		</>
+	);
 }
