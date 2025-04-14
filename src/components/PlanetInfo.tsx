@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { PlanetData } from "../utils/types";
+import { PlanetData, PlanetsList } from "../utils/types";
 
-interface PlanetInfoProps {}
+interface PlanetInfoProps {
+	id: number;
+}
 
 export default function PlanetInfo(props: PlanetInfoProps) {
-	const [planets, setPlanets] = useState<PlanetData>();
+	const [planets, setPlanets] = useState<PlanetsList>();
 
 	useEffect(() => {
 		console.log("Vi Fetchar");

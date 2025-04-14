@@ -10,3 +10,7 @@ export interface PlanetData {
 	mass: number;
 	temperature: number;
 }
+
+export interface PlanetsList {
+	PlanetData: [];
+}
