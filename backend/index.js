@@ -48,18 +48,25 @@ app.post("/planet/:id", mymiddleWare, async (req, res) => {
 	console.log("Skapar specifik planet");
 	await database.run("BEGIN TRANSACTION");
 	const result = await database.run("INSERT INTO planets (?????) VALUES (?,?)", [req.body.name, req.body.population]);
-	if (result.changes === 0) {
-		await database.run("ROLLBACK TRANSACTION");
-		res.status(400).send("Databas problem");
-	} else {
+	if (result.changes !== 0) {
 		await database.run("COMMIT TRANSACTION");
 		res.status(201).send("Skapat planet");
+	} else {
+		await database.run("ROLLBACK TRANSACTION");
+		res.status(409).send("Databas problem");
 	}
 });
 
-app.post("/planet/:id", mymiddleWare, (req, res) => {
+app.put("/planet/:id", mymiddleWare, async (req, res) => {
 	console.log("Uppdaterar specifik planet");
-	res.status(200).send("Redigerar planet");
+	await database.run("BEGIN TRANSACTION");
+	const result = await database.run("UPDATE planets SET (?,?) name=?, population=? WHERE id=?", [req.body.name]);
+	if (result.changes !== 0) {
+		res.status(200).send("Redigerar planet");
+	} else {
+		await database.run("ROLLBACK TRANSACTION");
+		res.status(409).send("Databas problem");
+	}
 });
 
 app.post("/login", (req, res) => {

@@ -1,0 +1,11 @@
+
+DROP TABLE IF EXISTS planets;
+DROP TABLE IF EXISTS systems;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE planets (id INTEGER PRIMARY KEY AUTOINCREMENT,system INTEGER NOT NULL, name CHAR(20) UNIQUE NOT NULL, description TEXT, image TEXT DEFAULT ('./placeholder.png'), FOREIGN KEY (system) REFERENCES systems(id))
+CREATE TABLE systems (id INTEGER PRIMARY KEY AUTOINCREMENT, name CHAR(20) UNIQUE NOT NULL, description TEXT)
+CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, email CHAR(20) UNIQUE NOT NULL, password TEXT NOT NULL, isAdmin BOOLEAN NOT NULL DEFAULT (false))
+
+--Users
+INSERT INTO users (email, password, isAdmin) VALUES (rasmus@iths.se, abc123, true)
