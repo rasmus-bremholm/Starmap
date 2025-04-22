@@ -9,24 +9,52 @@ const planetDataBackup = JSON.parse(JSON.stringify(planetData));
 
 app.use(express.json());
 
+let database;
+async () => {
+	database = await sqlite.open({
+		driver: sqlite.Database,
+		filename: "starmap.sqlite",
+	});
+
+	await database.run("PRAGMA foreign_keys = ON");
+
+	console.log("Databasen Redo");
+};
+
 function mymiddleWare(req, res, next) {
 	console.log("Testar middleware");
 	next();
 }
 
-app.get("/planets-list", (req, res) => {
+app.get("/planets-list", async (req, res) => {
 	console.log("Fångar planeternas namn");
-	res.status(200).send("Returning Planets List");
+	const planets = await database.all("SELECT * FROM planets");
+	planetData = planets;
+	res.status(200).send(planets);
 });
 
-app.get("/planet/:id", (req, res) => {
+app.get("/planet/:id", async (req, res) => {
 	console.log("Fångar specifik planet");
+	const planet = await database.all("SELECT * FROM planets WHERE id=?", [req.params.id]);
 	res.status(200).send("Returning Planet Info");
 });
 
 app.post("/reset", (req, res) => {
 	console.log("Resettar Planeterna");
 	res.status(200).send("Vi resettar planeterna");
+});
+
+app.post("/planet/:id", mymiddleWare, async (req, res) => {
+	console.log("Skapar specifik planet");
+	await database.run("BEGIN TRANSACTION");
+	const result = await database.run("INSERT INTO planets (?????) VALUES (?,?)", [req.body.name, req.body.population]);
+	if (result.changes === 0) {
+		await database.run("ROLLBACK TRANSACTION");
+		res.status(400).send("Databas problem");
+	} else {
+		await database.run("COMMIT TRANSACTION");
+		res.status(201).send("Skapat planet");
+	}
 });
 
 app.post("/planet/:id", mymiddleWare, (req, res) => {
