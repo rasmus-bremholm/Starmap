@@ -6,7 +6,7 @@ interface PlanetInfoProps {
 }
 
 export default function PlanetInfo(props: PlanetInfoProps) {
-	const [planets, setPlanets] = useState<PlanetsList>();
+	const [planets, setPlanets] = useState<PlanetData>();
 
 	useEffect(() => {
 		console.log("Vi Fetchar");
