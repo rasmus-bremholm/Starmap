@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { PlanetsList } from "../utils/types";
+import { PlanetData } from "../utils/types";
+import { Link } from "react-router-dom";
 
 const SideBarNav = styled.nav`
 	padding: 1rem;
@@ -17,7 +18,7 @@ const PlanetsNav = styled.div`
 `;
 
 export default function SidebarNavigation() {
-	const [planetList, setPlanetList] = useState<PlanetsList>();
+	const [planetList, setPlanetList] = useState<PlanetData[]>();
 
 	useEffect(() => {
 		fetch("http://localhost:1337/planets-list")
@@ -35,7 +36,11 @@ export default function SidebarNavigation() {
 			</div>
 			<PlanetsNav>
 				{planetList?.map((planet) => (
-					<li key={planet.id}></li>
+					<Link to={String(planet.id)}>
+						<li key={planet.id}>
+							<h3>{planet.title}</h3>
+						</li>
+					</Link>
 				))}
 			</PlanetsNav>
 		</SideBarNav>

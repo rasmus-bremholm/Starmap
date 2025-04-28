@@ -1,8 +1,10 @@
 import express from "express";
+import cors from "cors";
+import type { RequestHandler, Request, Response, NextFunction } from "express";
 import { Database } from "sqlite";
 const app = express();
-import sqlite3 from "sqlite3";
-import sqlite from "sqlite";
+import { sqlite3 } from "sqlite3";
+import * as sqlite from "sqlite";
 import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";
 const port = 1337;
@@ -13,6 +15,7 @@ const planetDataBackup = JSON.parse(JSON.stringify(planetData));
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(cors());
 
 let database: Database;
 async () => {
@@ -26,7 +29,7 @@ async () => {
 	console.log("Databasen Redo");
 };
 
-function mymiddleWare(req, res, next) {
+function mymiddleWare(req: Request, res: Response, next: NextFunction) {
 	console.log("Kallar på middleware");
 	let token = req.cookies.token;
 
