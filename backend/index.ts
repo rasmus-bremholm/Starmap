@@ -1,19 +1,20 @@
-const express = require("express");
+import express from "express";
+import { Database } from "sqlite";
 const app = express();
-const sqlite3 = require("sqlite3");
-const sqlite = require("sqlite");
-const cookieParser = require("cookie-parser");
-const { v4: uuidv4 } = require("uuid");
+import sqlite3 from "sqlite3";
+import sqlite from "sqlite";
+import cookieParser from "cookie-parser";
+import { v4 as uuidv4 } from "uuid";
 const port = 1337;
 const tokenExpireTime = 900000;
 
-const planetData = null;
+let planetData = null;
 const planetDataBackup = JSON.parse(JSON.stringify(planetData));
 
 app.use(cookieParser());
 app.use(express.json());
 
-let database;
+let database: Database;
 async () => {
 	database = await sqlite.open({
 		driver: sqlite.Database,
@@ -37,7 +38,7 @@ function mymiddleWare(req, res, next) {
 	next();
 }
 
-app.get("/planets-list", async (req, res) => {
+app.get("/planets-list", async (_req, res) => {
 	console.log("Hämtar planeterna");
 	const planets = await database.all("SELECT * FROM planets");
 	if (planets.length > 0) {
@@ -58,7 +59,7 @@ app.get("/planet/:id", async (req, res) => {
 	}
 });
 
-app.post("/reset", (req, res) => {
+app.post("/reset", (_req, res) => {
 	console.log("Resettar Planeterna");
 	res.status(200).send("Vi resettar planeterna");
 });
@@ -102,13 +103,13 @@ app.delete("/planet/:id", mymiddleWare, async (req, res) => {
 	}
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", async (_req, res) => {
 	let loginToken = uuidv4();
 	res.cookie("token", loginToken);
 	res.status(200).send("Logged In");
 });
 
-app.post("/logout", async (req, res) => {
+app.post("/logout", async (_req, res) => {
 	res.cookie("token", "");
 	console.log("Vi tömmde cookies");
 	res.status(200).send("Logged out");
