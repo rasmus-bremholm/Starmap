@@ -12,7 +12,7 @@ export default function PlanetsView() {
 	return (
 		<MainGrid>
 			<SidebarNavigation />
-			<PlanetInfo />
+			<PlanetInfo id={0} />
 		</MainGrid>
 	);
 }
