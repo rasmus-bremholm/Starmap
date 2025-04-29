@@ -14,7 +14,7 @@ export default function PlanetInfo(props: PlanetInfoProps) {
 			.then((result) => {
 				setPlanet(result);
 			});
-	});
+	}, []);
 
 	return (
 		<>

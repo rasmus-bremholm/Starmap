@@ -47,27 +47,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const app = (0, express_1.default)();
+const sqlite3_1 = __importDefault(require("sqlite3"));
 const sqlite = __importStar(require("sqlite"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-//import * as cookieParser from "cookie-parser";
 const uuid_1 = require("uuid");
 const port = 1337;
 const tokenExpireTime = 900000;
-let planetData = null;
-const planetDataBackup = JSON.parse(JSON.stringify(planetData));
+let planetsData = null;
+const planetDataBackup = JSON.parse(JSON.stringify(planetsData));
+const app = (0, express_1.default)();
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 let database;
-() => __awaiter(void 0, void 0, void 0, function* () {
+(() => __awaiter(void 0, void 0, void 0, function* () {
     database = yield sqlite.open({
-        driver: sqlite.Database,
+        driver: sqlite3_1.default.Database,
         filename: "starmap.sqlite",
     });
     yield database.run("PRAGMA foreign_keys = ON");
     console.log("Databasen Redo");
-});
+}))();
 function mymiddleWare(req, res, next) {
     console.log("Kallar på middleware");
     let token = req.cookies.token;
@@ -79,9 +79,8 @@ function mymiddleWare(req, res, next) {
 }
 app.get("/planets-list", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Hämtar planeterna");
-    const planets = yield database.all("SELECT * FROM planets");
+    const planets = (yield database.all("SELECT * FROM planets"));
     if (planets.length > 0) {
-        planetData = planets;
         res.status(200).send(planets);
     }
     else {
@@ -90,8 +89,8 @@ app.get("/planets-list", (_req, res) => __awaiter(void 0, void 0, void 0, functi
 }));
 app.get("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Hämtar specifik planet");
-    const planet = yield database.get("SELECT * FROM planets WHERE id=?", [req.params.id]);
-    if (planet.length > 0) {
+    const planet = (yield database.get("SELECT * FROM planets WHERE id=?", [req.params.id]));
+    if (planet) {
         res.status(200).send("Returning Planet Info");
     }
     else {

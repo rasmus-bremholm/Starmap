@@ -25,8 +25,9 @@ export default function SidebarNavigation() {
 			.then((response) => response.json())
 			.then((result) => {
 				setPlanetList(result);
+				console.log(planetList);
 			});
-	});
+	}, []);
 
 	return (
 		<SideBarNav>
@@ -36,8 +37,8 @@ export default function SidebarNavigation() {
 			</div>
 			<PlanetsNav>
 				{planetList?.map((planet) => (
-					<Link to={String(planet.id)}>
-						<li key={planet.id}>
+					<Link key={planet.id} to={String(planet.id)}>
+						<li>
 							<h3>{planet.title}</h3>
 						</li>
 					</Link>

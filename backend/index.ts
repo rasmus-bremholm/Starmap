@@ -1,33 +1,46 @@
 import express from "express";
 import cors from "cors";
 import type { RequestHandler, Request, Response, NextFunction } from "express";
-import { Database } from "sqlite";
-const app = express();
-import { sqlite3 } from "sqlite3";
+import { Database, open } from "sqlite";
+import sqlite3 from "sqlite3";
 import * as sqlite from "sqlite";
 import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";
 const port = 1337;
 const tokenExpireTime = 900000;
 
-let planetData = null;
-const planetDataBackup = JSON.parse(JSON.stringify(planetData));
+interface PlanetData {
+	id: number;
+	title: string;
+	system: string;
+	desc: string;
+	image: string;
+	image_alt: string;
+	texture: string;
+	population: number;
+	diameter: number;
+	mass: number;
+	temperature: number;
+}
 
+let planetsData = null;
+const planetDataBackup = JSON.parse(JSON.stringify(planetsData));
+const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
 
 let database: Database;
-async () => {
+(async () => {
 	database = await sqlite.open({
-		driver: sqlite.Database,
+		driver: sqlite3.Database,
 		filename: "starmap.sqlite",
 	});
 
 	await database.run("PRAGMA foreign_keys = ON");
 
 	console.log("Databasen Redo");
-};
+})();
 
 function mymiddleWare(req: Request, res: Response, next: NextFunction) {
 	console.log("Kallar på middleware");
@@ -43,9 +56,8 @@ function mymiddleWare(req: Request, res: Response, next: NextFunction) {
 
 app.get("/planets-list", async (_req, res) => {
 	console.log("Hämtar planeterna");
-	const planets = await database.all("SELECT * FROM planets");
+	const planets = (await database.all("SELECT * FROM planets")) as PlanetData[];
 	if (planets.length > 0) {
-		planetData = planets;
 		res.status(200).send(planets);
 	} else {
 		res.status(400).send("Hittade inte planeterna");
@@ -54,8 +66,8 @@ app.get("/planets-list", async (_req, res) => {
 
 app.get("/planet/:id", async (req, res) => {
 	console.log("Hämtar specifik planet");
-	const planet = await database.get("SELECT * FROM planets WHERE id=?", [req.params.id]);
-	if (planet.length > 0) {
+	const planet = (await database.get("SELECT * FROM planets WHERE id=?", [req.params.id])) as PlanetData;
+	if (planet) {
 		res.status(200).send("Returning Planet Info");
 	} else {
 		res.status(400).send("Hittade inte planeten");
