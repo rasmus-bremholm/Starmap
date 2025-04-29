@@ -6,14 +6,12 @@ export default function EditView() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	useEffect(() => {
-		console.log("Use Effect");
-	});
+		// Do nothing
+	}, []);
 
 	return (
 		<>
-			<main>
-				(!isAuthenticated ? <LoginForm /> : <EditForm />)
-			</main>
+			<main>{!isAuthenticated ? <LoginForm onLogin={() => setIsAuthenticated(true)} /> : <EditForm />}</main>
 		</>
 	);
 }

@@ -135,3 +135,22 @@ p {
 	display: flex;
 	gap: 0.5rem;
 }
+
+/** Login */
+.login-form {
+	max-width: 500px;
+	max-height: 600px;
+	background-color: var(--panel-color-focus);
+	border-radius: var(--border-radius);
+	padding: 2rem;
+	h2 {
+		padding-bottom: 0.5rem;
+	}
+	form {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 0.3rem;
+	}
+}

@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
 		<Routes>
 			<Route path='/' element={<App />}>
 				<Route index element={<PlanetsView />} />
-				<Route path='edit' element={<EditView />} />
+				<Route path='edit/:action' element={<EditView />} />
 				<Route path=':id' element={<PlanetsView />} />
 			</Route>
 		</Routes>
