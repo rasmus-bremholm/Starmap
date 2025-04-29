@@ -15,7 +15,7 @@ export default function PlanetInfo(props: PlanetInfoProps) {
 				//console.log(result);
 				setPlanet(result);
 			});
-	}, []);
+	}, [props.id]);
 
 	return (
 		<>
