@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PlanetData } from "../utils/types";
+import MenuList from "./MenuList";
 
 interface PlanetInfoProps {
 	id: number;
@@ -53,6 +54,7 @@ export default function PlanetInfo(props: PlanetInfoProps) {
 						</div>
 					</div>
 				</div>
+				<MenuList />
 			</main>
 		</>
 	);
