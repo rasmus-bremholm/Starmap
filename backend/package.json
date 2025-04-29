@@ -1,22 +1,30 @@
 {
-  "name": "starmap-backend",
-  "version": "0.0.1",
+  "name": "backend",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "eslint": "^9.24.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "eslint": "^9.25.1",
     "express": "^5.1.0",
     "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.3",
+    "concurrently": "^9.1.2",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.8.3"
   }
 }

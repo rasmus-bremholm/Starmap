@@ -1,6 +1,7 @@
 export interface PlanetData {
 	id: number;
 	title: string;
+	system: string;
 	desc: string;
 	image: string;
 	image_alt: string;
