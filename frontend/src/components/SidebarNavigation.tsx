@@ -27,14 +27,17 @@ const PlanetsNav = styled.div`
 export default function SidebarNavigation() {
 	const [planetList, setPlanetList] = useState<PlanetData[]>();
 
+	const storePlanets = (result: PlanetData[]) => {
+		setPlanetList(result);
+	};
+
 	useEffect(() => {
 		fetch("http://localhost:1337/planets-list")
 			.then((response) => response.json())
 			.then((result) => {
-				setPlanetList(result);
-				console.log(planetList);
+				storePlanets(result);
 			});
-	}, []);
+	}, [planetList]);
 
 	return (
 		<SideBarNav>

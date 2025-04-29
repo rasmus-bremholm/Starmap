@@ -15,6 +15,8 @@ export default function EditForm(action: EditActionProps) {
 	const [planetList, setPlanetList] = useState<PlanetData[]>();
 	const [activePlanet, setActivePlanet] = useState("");
 
+	const actions = ["edit", "add", "delete"];
+
 	useEffect(() => {
 		fetch("http://localhost:1337/planets-list")
 			.then((response) => response.json())
@@ -35,6 +37,19 @@ export default function EditForm(action: EditActionProps) {
 								<option>{planet.title}</option>
 							))}
 						</select>
+						<label htmlFor='select-action'>Change Action</label>
+						{actions.map((action) => (
+							<label key={action} htmlFor={action}>
+								<input
+									type='radio'
+									name='select-action'
+									id={action}
+									checked={action === editAction}
+									onChange={(event) => setEditAction(event.target.value)}
+								/>
+								{action}
+							</label>
+						))}
 					</form>
 				</div>
 			</EditContainer>
