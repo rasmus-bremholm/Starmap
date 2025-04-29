@@ -6,6 +6,9 @@ import sqlite3 from "sqlite3";
 import * as sqlite from "sqlite";
 import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+import jsonData from "./planets.json";
+
 const port = 1337;
 const tokenExpireTime = 900000;
 
