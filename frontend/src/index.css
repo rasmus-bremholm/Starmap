@@ -80,6 +80,7 @@ p {
 	padding: 3rem;
 	h1 {
 		padding-bottom: 2rem;
+		text-transform: capitalize;
 	}
 	h2,
 	h3 {
