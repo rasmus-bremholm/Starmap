@@ -68,7 +68,7 @@ app.get("/planet/:id", async (req, res) => {
 	console.log("Hämtar specifik planet");
 	const planet = (await database.get("SELECT * FROM planets WHERE id=?", [req.params.id])) as PlanetData;
 	if (planet) {
-		res.status(200).send("Returning Planet Info");
+		res.status(200).send(planet);
 	} else {
 		res.status(400).send("Hittade inte planeten");
 	}

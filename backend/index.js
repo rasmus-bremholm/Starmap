@@ -91,7 +91,7 @@ app.get("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function*
     console.log("Hämtar specifik planet");
     const planet = (yield database.get("SELECT * FROM planets WHERE id=?", [req.params.id]));
     if (planet) {
-        res.status(200).send("Returning Planet Info");
+        res.status(200).send(planet);
     }
     else {
         res.status(400).send("Hittade inte planeten");

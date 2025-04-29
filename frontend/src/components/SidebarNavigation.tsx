@@ -7,6 +7,11 @@ const SideBarNav = styled.nav`
 	padding: 1rem;
 	display: grid;
 	grid-template-columns: auto;
+	grid-template-rows: min-content auto;
+	gap: 1rem;
+	h1 {
+		padding-bottom: 0.3rem;
+	}
 
 	// Colors
 	background-color: var(--panel-color);
@@ -15,6 +20,8 @@ const SideBarNav = styled.nav`
 const PlanetsNav = styled.div`
 	display: flex;
 	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
 `;
 
 export default function SidebarNavigation() {

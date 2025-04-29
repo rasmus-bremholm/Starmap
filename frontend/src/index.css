@@ -4,7 +4,7 @@
 	font-weight: 400;
 
 	/** Variables */
-
+	--border-radius: 4px;
 	--text-color: #b6d4ea;
 	--text-color-focus: rgba(255, 255, 255, 0.87);
 	--heading-text-color: #7cbbe8;
@@ -67,7 +67,65 @@ a {
 a:hover {
 	color: var(--text-color-focus);
 }
+li {
+	list-style: none;
+}
 p {
 	font-weight: 400;
 	font-size: 1rem;
+}
+
+/** Planet Stuffs */
+.planet-info-container {
+	padding: 3rem;
+	h1 {
+		padding-bottom: 2rem;
+	}
+	h2,
+	h3 {
+		padding-bottom: 0.5rem;
+	}
+}
+
+.planet-info-wrapper {
+	max-width: 600px;
+}
+.planet-info-title-container {
+	padding-bottom: 1rem;
+}
+
+.stats-container {
+	display: grid;
+	grid-template-columns: auto;
+	div {
+		display: grid;
+		grid-template-columns: auto auto;
+		.attribute-name {
+			font-weight: 600;
+		}
+		.attribute-value {
+			text-align: right;
+		}
+	}
+}
+
+.planet-image-container {
+	border-radius: var(--border-radius);
+	max-height: 300px;
+	max-width: 600px;
+	background-color: var(--panel-color-focus);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+
+.planet-image {
+	max-width: 600px;
+	max-height: 300px;
+	clip-path: inset(0);
+	transition: var(--standard);
+	&:hover {
+		transform: scale(1.1);
+	}
 }
