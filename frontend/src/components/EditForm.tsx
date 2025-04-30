@@ -33,7 +33,47 @@ export default function EditForm(action: EditActionProps) {
 	const [activePlanet, setActivePlanet] = useState("");
 	const [isDisabled, setIsDisabled] = useState(true);
 
+	// Form Variables
+	const [planetTitle, setPlanetTitle] = useState("default");
+	const [planetDescription, setPlanetDescription] = useState("lorem");
+	const [planetSystem, setPlanetSystem] = useState(1);
+	const [planetPopulation, setPlanetPopulation] = useState<number>(1000);
+	const [planetDiameter, setPlanetDiameter] = useState(1000);
+	const [planetMass, setPlanetMass] = useState(1000);
+	const [planetTemperature, setPlanetTemperature] = useState(20);
+	const [planetImage, setPlanetImage] = useState("./default.png");
+
 	const actions = ["edit", "add", "delete"];
+	const handleSubmit = async () => {
+		switch (editAction) {
+			case "edit":
+				break;
+			case "add":
+				{
+					fetch(`http://localhost:1337/planet/${planetList?.filter((planet) => planet.title === activePlanet)}`, {
+						method: "POST",
+						body: JSON.stringify({
+							title: planetTitle,
+							desc: planetDescription,
+							population: planetPopulation,
+							system: planetSystem,
+							image: planetImage,
+							diameter: planetDiameter,
+							mass: planetMass,
+							temperature: planetTemperature,
+						}),
+					})
+						.then((response) => response.json())
+						.then((result) => {
+							console.log(result);
+						});
+				}
+
+				break;
+			case "delete":
+				break;
+		}
+	};
 
 	useEffect(() => {
 		fetch("http://localhost:1337/planets-list")
@@ -48,7 +88,7 @@ export default function EditForm(action: EditActionProps) {
 			<EditContainer>
 				{editAction && <h1>{editAction} Planet</h1>}
 				<div>
-					<form>
+					<form onSubmit={handleSubmit}>
 						<div id='select-planet-container'>
 							<label htmlFor='select-planet'>Choose Planet:</label>
 							<select name='select-planet' onChange={(event) => setActivePlanet(event.target.value)} value={activePlanet}>

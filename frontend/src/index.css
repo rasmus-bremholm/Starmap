@@ -74,6 +74,9 @@ p {
 	font-weight: 400;
 	font-size: 1rem;
 }
+input {
+	padding: 0.3rem;
+}
 
 /** Planet Stuffs */
 .planet-info-container {
