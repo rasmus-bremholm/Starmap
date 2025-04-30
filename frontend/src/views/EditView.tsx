@@ -8,7 +8,7 @@ export default function EditView() {
 	const action = useParams();
 
 	useEffect(() => {
-		// Do nothing
+		// Do nothing, for now.
 	}, []);
 
 	return (

@@ -37,7 +37,7 @@ export default function SidebarNavigation() {
 			.then((result) => {
 				storePlanets(result);
 			});
-	}, [planetList]);
+	}, []);
 
 	return (
 		<SideBarNav>
