@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import type { PlanetData } from "../utils/types";
+import type { PlanetData, PlanetFormData } from "../utils/types";
 
 interface EditActionProps {
 	action: string | undefined;
@@ -34,14 +34,18 @@ export default function EditForm(action: EditActionProps) {
 	const [isDisabled, setIsDisabled] = useState(true);
 
 	// Form Variables
-	const [planetTitle, setPlanetTitle] = useState("default");
-	const [planetDescription, setPlanetDescription] = useState("lorem");
-	const [planetSystem, setPlanetSystem] = useState(1);
-	const [planetPopulation, setPlanetPopulation] = useState<number>(1000);
-	const [planetDiameter, setPlanetDiameter] = useState(1000);
-	const [planetMass, setPlanetMass] = useState(1000);
-	const [planetTemperature, setPlanetTemperature] = useState(20);
-	const [planetImage, setPlanetImage] = useState("./default.png");
+	const [planet, setPlanet] = useState<PlanetFormData>({
+		system: 1,
+		title: "default",
+		desc: "lorem",
+		population: 1000,
+		diameter: 1000,
+		mass: 1000,
+		temperature: 20,
+		image: "./default.png",
+		image_alt: "./default.png",
+		texture: "./texture.png",
+	});
 
 	const actions = ["edit", "add", "delete"];
 	const handleSubmit = async () => {
@@ -50,18 +54,10 @@ export default function EditForm(action: EditActionProps) {
 				break;
 			case "add":
 				{
-					fetch(`http://localhost:1337/planet/${planetList?.filter((planet) => planet.title === activePlanet)}`, {
+					fetch(`http://localhost:1337/planet/`, {
 						method: "POST",
-						body: JSON.stringify({
-							title: planetTitle,
-							desc: planetDescription,
-							population: planetPopulation,
-							system: planetSystem,
-							image: planetImage,
-							diameter: planetDiameter,
-							mass: planetMass,
-							temperature: planetTemperature,
-						}),
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({}),
 					})
 						.then((response) => response.json())
 						.then((result) => {
@@ -83,20 +79,27 @@ export default function EditForm(action: EditActionProps) {
 			});
 	}, []);
 
+	useEffect(() => {
+		//Validate inputs
+	}, []);
+
 	return (
 		<main className='planet-info-container'>
 			<EditContainer>
 				{editAction && <h1>{editAction} Planet</h1>}
 				<div>
 					<form onSubmit={handleSubmit}>
-						<div id='select-planet-container'>
-							<label htmlFor='select-planet'>Choose Planet:</label>
-							<select name='select-planet' onChange={(event) => setActivePlanet(event.target.value)} value={activePlanet}>
-								{planetList?.map((planet) => (
-									<option key={planet.id}>{planet.title}</option>
-								))}
-							</select>
-						</div>
+						{(editAction === "edit" || editAction === "delete") && (
+							<div id='select-planet-container'>
+								<label htmlFor='select-planet'>Choose Planet:</label>
+								<select name='select-planet' onChange={(event) => setActivePlanet(event.target.value)} value={activePlanet}>
+									{planetList?.map((planet) => (
+										<option key={planet.id}>{planet.title}</option>
+									))}
+								</select>
+							</div>
+						)}
+
 						<div id='select-action-container'>
 							<label htmlFor='select-action'>Change Action</label>
 							{actions.map((action) => (
@@ -122,31 +125,59 @@ export default function EditForm(action: EditActionProps) {
 							<div>
 								<div className='title-container'>
 									<label htmlFor='title'>Title:</label>
-									<input name='title' type='text' />
+									<input
+										name='title'
+										type='text'
+										onChange={(event) => setPlanet({ ...planet, [event.target.name]: event.target.value })}
+										value={planet.title}
+									/>
 								</div>
 								<div className='desc-container'>
 									<label htmlFor='description'>Description:</label>
-									<textarea name='description'></textarea>
+									<textarea
+										name='desc'
+										onChange={(event) => setPlanet({ ...planet, [event.target.name]: event.target.value })}
+										value={planet.desc}></textarea>
 								</div>
 								<div className='population-container'>
 									<label htmlFor='population'>Population:</label>
-									<input name='population' type='number' />
+									<input
+										name='population'
+										type='number'
+										onChange={(e) => setPlanet({ ...planet, [e.target.name]: parseInt(e.target.value) })}
+										value={planet.population}
+									/>
 								</div>
 								<div className='diameter-container'>
 									<label htmlFor='diameter'>Diameter:</label>
-									<input name='diameter' type='number' />
+									<input
+										name='diameter'
+										type='number'
+										onChange={(e) => setPlanet({ ...planet, [e.target.name]: parseInt(e.target.value) })}
+										value={planet.diameter}
+									/>
 								</div>
 								<div className='mass-container'>
 									<label htmlFor='mass'>Mass:</label>
-									<input name='mass' type='number' />
+									<input
+										name='mass'
+										type='number'
+										onChange={(e) => setPlanet({ ...planet, [e.target.name]: parseInt(e.target.value) })}
+										value={planet.mass}
+									/>
 								</div>
 								<div className='temperature-container'>
 									<label htmlFor='temperature'>Temperature:</label>
-									<input name='temperature' type='number' />
+									<input
+										name='temperature'
+										type='number'
+										onChange={(e) => setPlanet({ ...planet, [e.target.name]: parseInt(e.target.value) })}
+										value={planet.temperature}
+									/>
 								</div>
 								<div className='image-container'>
 									<label htmlFor='image'>Image:</label>
-									<input name='image' type='text' disabled={true} />
+									<input name='image' type='text' disabled={true} value={planet.image} />
 								</div>
 							</div>
 						)}

@@ -82,7 +82,7 @@ app.post("/reset", (_req, res) => {
 	res.status(200).send("Vi resettar planeterna");
 });
 
-app.post("/planet/:id", mymiddleWare, async (req, res) => {
+app.post("/planet/", mymiddleWare, async (req, res) => {
 	console.log("Skapar specifik planet");
 	await database.run("BEGIN TRANSACTION");
 	const result = await database.run("INSERT INTO planets (system, title, desc, population,diameter,mass,temperature, image) VALUES (?,?)", [
@@ -107,7 +107,10 @@ app.post("/planet/:id", mymiddleWare, async (req, res) => {
 app.put("/planet/:id", mymiddleWare, async (req, res) => {
 	console.log("Uppdaterar specifik planet");
 	await database.run("BEGIN TRANSACTION");
-	const result = await database.run("UPDATE planets SET (?,?) name=?, population=? WHERE id=?", [req.body.title]);
+	const result = await database.run(
+		"UPDATE planets SET (system, title, desc, population,diameter,mass,temperature, image) system=?, title=?, desc=?, population=?, diameter=?, mass=?, temperature=?, image=? WHERE id=?",
+		[req.body.system, req.body.title, req.body.desc, req.body.population, req.body.diameter, req.body.mass, req.body.temperature, req.body.image]
+	);
 	if (result.changes !== 0) {
 		await database.run("COMMIT TRANSACTION");
 		res.status(200).send("Redigerar planet");
