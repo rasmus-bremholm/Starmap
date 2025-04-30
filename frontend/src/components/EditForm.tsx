@@ -43,34 +43,6 @@ export default function EditForm(action: EditActionProps) {
 			});
 	}, []);
 
-	const actionSwitch = (action: string | undefined) => {
-		switch (action) {
-			case "edit":
-				return (
-					<div>
-						<div className='title-container'>
-							<label htmlFor='title'>Title:</label>
-							<input name='title' type='text' />
-						</div>
-						<div className='desc-container'>
-							<label htmlFor='description'>Description:</label>
-							<textarea name='description'></textarea>
-						</div>
-						<div className='population-container'>
-							<label htmlFor='population'>Population:</label>
-							<input name='population' type='number' />
-						</div>
-					</div>
-				);
-			case "add":
-				return <div>add</div>;
-			case "delete":
-				return <div>delete</div>;
-			default:
-				return null;
-		}
-	};
-
 	return (
 		<main className='planet-info-container'>
 			<EditContainer>
@@ -102,7 +74,42 @@ export default function EditForm(action: EditActionProps) {
 							))}
 						</div>
 
-						{actionSwitch(editAction)}
+						{editAction === "delete" ? (
+							<div>
+								<p>Are you sure?</p>
+							</div>
+						) : (
+							<div>
+								<div className='title-container'>
+									<label htmlFor='title'>Title:</label>
+									<input name='title' type='text' />
+								</div>
+								<div className='desc-container'>
+									<label htmlFor='description'>Description:</label>
+									<textarea name='description'></textarea>
+								</div>
+								<div className='population-container'>
+									<label htmlFor='population'>Population:</label>
+									<input name='population' type='number' />
+								</div>
+								<div className='diameter-container'>
+									<label htmlFor='diameter'>Diameter:</label>
+									<input name='diameter' type='number' />
+								</div>
+								<div className='mass-container'>
+									<label htmlFor='mass'>Mass:</label>
+									<input name='mass' type='number' />
+								</div>
+								<div className='temperature-container'>
+									<label htmlFor='temperature'>Temperature:</label>
+									<input name='temperature' type='number' />
+								</div>
+								<div className='image-container'>
+									<label htmlFor='image'>Image:</label>
+									<input name='image' type='text' disabled={true} />
+								</div>
+							</div>
+						)}
 						<input type='submit' value='Commit' disabled={isDisabled} />
 					</form>
 				</div>
