@@ -57,7 +57,7 @@ function mymiddleWare(req: Request, res: Response, next: NextFunction) {
 	next();
 }
 
-app.get("/planets-list", async (_req, res) => {
+app.get("/planets-list", async (_req: Request, res: Response) => {
 	console.log("Hämtar planeterna");
 	const planets = (await database.all("SELECT * FROM planets")) as PlanetData[];
 	if (planets.length > 0) {
@@ -67,7 +67,7 @@ app.get("/planets-list", async (_req, res) => {
 	}
 });
 
-app.get("/planet/:id", async (req, res) => {
+app.get("/planet/:id", async (req: Request, res: Response) => {
 	console.log("Hämtar specifik planet");
 	const planet = (await database.get("SELECT * FROM planets WHERE id=?", [req.params.id])) as PlanetData;
 	if (planet) {
@@ -77,12 +77,12 @@ app.get("/planet/:id", async (req, res) => {
 	}
 });
 
-app.post("/reset", (_req, res) => {
+app.post("/reset", (_req: Request, res: Response) => {
 	console.log("Resettar Planeterna");
 	res.status(200).send("Vi resettar planeterna");
 });
 
-app.post("/planet/", mymiddleWare, async (req, res) => {
+app.post("/planet/", mymiddleWare, async (req: Request, res: Response) => {
 	console.log("Skapar specifik planet");
 	await database.run("BEGIN TRANSACTION");
 	const result = await database.run("INSERT INTO planets (system, title, desc, population,diameter,mass,temperature, image) VALUES (?,?)", [
@@ -104,7 +104,7 @@ app.post("/planet/", mymiddleWare, async (req, res) => {
 	}
 });
 
-app.put("/planet/:id", mymiddleWare, async (req, res) => {
+app.put("/planet/:id", mymiddleWare, async (req: Request, res: Response) => {
 	console.log("Uppdaterar specifik planet");
 	await database.run("BEGIN TRANSACTION");
 	const result = await database.run(
@@ -120,7 +120,7 @@ app.put("/planet/:id", mymiddleWare, async (req, res) => {
 	}
 });
 
-app.delete("/planet/:id", mymiddleWare, async (req, res) => {
+app.delete("/planet/:id", mymiddleWare, async (req: Request, res: Response) => {
 	console.log("Vi tar bort specifik planet");
 	await database.run("BEGIN TRANSACTION");
 	const result = await database.run("DELETE FROM planets WHERE id=?", req.body.id);
@@ -133,13 +133,13 @@ app.delete("/planet/:id", mymiddleWare, async (req, res) => {
 	}
 });
 
-app.post("/login", async (_req, res) => {
+app.post("/login", async (_req: Request, res: Response) => {
 	let loginToken = uuidv4();
 	res.cookie("token", loginToken);
 	res.status(200).send("Logged In");
 });
 
-app.post("/logout", async (_req, res) => {
+app.post("/logout", async (_req: Request, res: Response) => {
 	res.cookie("token", "");
 	console.log("Vi tömmde cookies");
 	res.status(200).send("Logged out");

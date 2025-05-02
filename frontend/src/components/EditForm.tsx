@@ -81,6 +81,9 @@ export default function EditForm(action: EditActionProps) {
 
 	useEffect(() => {
 		//Validate inputs
+		if ((planet.title.length > 0 && planet.title !== "default") || planet.desc.length > 0 || planet.population > 0 || planet.temperature) {
+			setIsDisabled(false);
+		}
 	}, [planet]);
 
 	return (
