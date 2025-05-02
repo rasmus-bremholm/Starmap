@@ -49,6 +49,7 @@ export default function EditForm(action: EditActionProps) {
 
 	const actions = ["edit", "add", "delete"];
 	const handleSubmit = async () => {
+		event?.preventDefault();
 		switch (editAction) {
 			case "edit":
 				break;
@@ -58,7 +59,7 @@ export default function EditForm(action: EditActionProps) {
 						const response = await fetch(`http://localhost:1337/planet/`, {
 							method: "POST",
 							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({ planet }),
+							body: JSON.stringify(planet),
 						});
 
 						if (!response.ok) {

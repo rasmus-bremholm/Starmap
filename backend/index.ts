@@ -82,10 +82,13 @@ app.post("/reset", (_req: Request, res: Response) => {
 	res.status(200).send("Vi resettar planeterna");
 });
 
-app.post("/planet/", async (req: Request, res: Response) => {
+// Testar med promise void....ingen aning längre.
+app.post("/planet/", async (req: Request, res: Response): Promise<void> => {
+	console.log("Incoming planet", req.body);
 	const { system, title, desc, population, diameter, mass, temperature, image } = req.body;
 	if (!system || !title || !desc || !population || !diameter || !mass || !temperature || !image) {
-		return res.status(400).send("Saknar alla fält");
+		res.status(400).json({ message: "Saknar alla fält" });
+		return;
 	}
 	console.log("Skapar specifik planet");
 
@@ -104,12 +107,16 @@ app.post("/planet/", async (req: Request, res: Response) => {
 		if (result.changes !== 0) {
 			await database.run("COMMIT TRANSACTION");
 			res.status(201).json({ message: "Skapat planet" });
+			return;
 		} else {
 			await database.run("ROLLBACK TRANSACTION");
-			res.status(500).send("Databas problem");
+			res.status(500).json({ error: "Databas problem" });
+			return;
 		}
 	} catch (error) {
 		await database.run("ROLLBACK TRANSACTION");
+		res.status(500).json({ error: "Databas problem" });
+		return;
 	}
 });
 
