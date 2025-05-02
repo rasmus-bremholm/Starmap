@@ -82,29 +82,33 @@ app.post("/reset", (_req: Request, res: Response) => {
 	res.status(200).send("Vi resettar planeterna");
 });
 
-app.post("/planet/", mymiddleWare, async (req: Request, res: Response) => {
-	console.log("Skapar specifik planet");
-	await database.run("BEGIN TRANSACTION");
-	const result = await database.run("INSERT INTO planets (system, title, desc, population,diameter,mass,temperature, image) VALUES (?,?)", [
-		req.body.system,
-		req.body.title,
-		req.body.desc,
-		req.body.population,
-		req.body.diameter,
-		req.body.mass,
-		req.body.temperature,
-		req.body.image,
-	]);
-	if (result.changes !== 0) {
-		await database.run("COMMIT TRANSACTION");
-		res.status(201).send("Skapat planet");
+app.post("/planet/", async (req: Request, res: Response) => {
+	if (!req.body) {
+		res.status(400).send("Du måste ha en body");
 	} else {
-		await database.run("ROLLBACK TRANSACTION");
-		res.status(409).send("Databas problem");
+		console.log("Skapar specifik planet");
+		await database.run("BEGIN TRANSACTION");
+		const result = await database.run("INSERT INTO planets (system, title, desc, population,diameter,mass,temperature, image) VALUES (?,?,?,?,?,?,?,?)", [
+			req.body.system,
+			req.body.title,
+			req.body.desc,
+			req.body.population,
+			req.body.diameter,
+			req.body.mass,
+			req.body.temperature,
+			req.body.image,
+		]);
+		if (result.changes !== 0) {
+			await database.run("COMMIT TRANSACTION");
+			res.status(201).send("Skapat planet");
+		} else {
+			await database.run("ROLLBACK TRANSACTION");
+			res.status(409).send("Databas problem");
+		}
 	}
 });
 
-app.put("/planet/:id", mymiddleWare, async (req: Request, res: Response) => {
+app.put("/planet/:id", async (req: Request, res: Response) => {
 	console.log("Uppdaterar specifik planet");
 	await database.run("BEGIN TRANSACTION");
 	const result = await database.run(
@@ -120,7 +124,7 @@ app.put("/planet/:id", mymiddleWare, async (req: Request, res: Response) => {
 	}
 });
 
-app.delete("/planet/:id", mymiddleWare, async (req: Request, res: Response) => {
+app.delete("/planet/:id", async (req: Request, res: Response) => {
 	console.log("Vi tar bort specifik planet");
 	await database.run("BEGIN TRANSACTION");
 	const result = await database.run("DELETE FROM planets WHERE id=?", req.body.id);
