@@ -57,7 +57,7 @@ export default function EditForm(action: EditActionProps) {
 			case "edit":
 				{
 					try {
-						const response = await fetch(`http://localhost:1337/planet/${planetList?.filter((planet) => planet.title === activePlanet)}`, {
+						const response = await fetch(`http://localhost:1337/planet/${activePlanetId}`, {
 							method: "PUT",
 							headers: { "Content-Type": "application/json" },
 							body: JSON.stringify(planet),
@@ -93,7 +93,7 @@ export default function EditForm(action: EditActionProps) {
 			case "delete":
 				{
 					try {
-						const response = await fetch(`http://localhost:1337/planet/${planetList?.filter((planet) => planet.title === activePlanet)}`, {
+						const response = await fetch(`http://localhost:1337/planet/${activePlanetId}`, {
 							method: "DELETE",
 							headers: { "Content-Type": "application/json" },
 						});
@@ -111,8 +111,11 @@ export default function EditForm(action: EditActionProps) {
 	};
 
 	useEffect(() => {
-		const getActivePlanetId = planetList?.filter((planet) => planet.title === activePlanet);
-		setActivePlanetId(getActivePlanetId[0].id);
+		if (activePlanet) {
+			const getActivePlanetId = planetList?.filter((planet) => planet.title === activePlanet);
+			setActivePlanetId(getActivePlanetId[0].id);
+			console.log(getActivePlanetId[0].id);
+		}
 	}, [activePlanet, planetList]);
 
 	useEffect(() => {

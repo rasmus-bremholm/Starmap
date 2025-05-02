@@ -143,9 +143,11 @@ app.delete("/planet/:id", async (req: Request, res: Response) => {
 	if (result.changes !== 0) {
 		await database.run("COMMIT TRANSACTION");
 		res.status(200).send("Tagit bort planet");
+		return;
 	} else {
 		await database.run("ROLLBACK TRANSACTION");
 		res.status(409).send("Databas problem, kunde inte ta bort");
+		return;
 	}
 });
 
