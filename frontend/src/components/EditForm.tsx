@@ -33,6 +33,8 @@ export default function EditForm(action: EditActionProps) {
 	const [activePlanet, setActivePlanet] = useState("");
 	const [isDisabled, setIsDisabled] = useState(true);
 
+	const [fulRefresh, setFulRefresh] = useState(false);
+
 	// Form Variables
 	const [planet, setPlanet] = useState<PlanetFormData>({
 		system: 1,
@@ -48,8 +50,8 @@ export default function EditForm(action: EditActionProps) {
 	});
 
 	const actions = ["edit", "add", "delete"];
-	const handleSubmit = async () => {
-		event?.preventDefault();
+	const handleSubmit = async (event: React.FormEvent) => {
+		event.preventDefault();
 		switch (editAction) {
 			case "edit":
 				break;
@@ -61,6 +63,7 @@ export default function EditForm(action: EditActionProps) {
 							headers: { "Content-Type": "application/json" },
 							body: JSON.stringify(planet),
 						});
+						setFulRefresh(!fulRefresh);
 
 						if (!response.ok) {
 							throw new Error(`Server error: ${response.status}`);
@@ -81,7 +84,7 @@ export default function EditForm(action: EditActionProps) {
 			.then((result) => {
 				setPlanetList(result);
 			});
-	}, []);
+	}, [fulRefresh]);
 
 	useEffect(() => {
 		console.log(planet);
