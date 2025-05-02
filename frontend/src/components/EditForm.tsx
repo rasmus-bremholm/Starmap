@@ -81,7 +81,7 @@ export default function EditForm(action: EditActionProps) {
 
 	useEffect(() => {
 		//Validate inputs
-	}, []);
+	}, [planet]);
 
 	return (
 		<main className='planet-info-container'>
