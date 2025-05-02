@@ -138,15 +138,21 @@ app.put("/planet/:id", async (req: Request, res: Response) => {
 
 app.delete("/planet/:id", async (req: Request, res: Response) => {
 	console.log("Vi tar bort specifik planet");
-	await database.run("BEGIN TRANSACTION");
-	const result = await database.run("DELETE FROM planets WHERE id=?", req.body.id);
-	if (result.changes !== 0) {
-		await database.run("COMMIT TRANSACTION");
-		res.status(200).send("Tagit bort planet");
-		return;
-	} else {
+	try {
+		await database.run("BEGIN TRANSACTION");
+		const result = await database.run("DELETE FROM planets WHERE id=?", req.body.id);
+		if (result.changes !== 0) {
+			await database.run("COMMIT TRANSACTION");
+			res.status(200).json({ message: "Deleted Planet" });
+			return;
+		} else {
+			await database.run("ROLLBACK TRANSACTION");
+			res.status(500).json({ error: "Något i databasen gick fel" });
+			return;
+		}
+	} catch (error) {
 		await database.run("ROLLBACK TRANSACTION");
-		res.status(409).send("Databas problem, kunde inte ta bort");
+		res.status(500).json({ error: "Databas problem igen" });
 		return;
 	}
 });

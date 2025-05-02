@@ -154,15 +154,24 @@ app.put("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function*
 }));
 app.delete("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Vi tar bort specifik planet");
-    yield database.run("BEGIN TRANSACTION");
-    const result = yield database.run("DELETE FROM planets WHERE id=?", req.body.id);
-    if (result.changes !== 0) {
-        yield database.run("COMMIT TRANSACTION");
-        res.status(200).send("Tagit bort planet");
+    try {
+        yield database.run("BEGIN TRANSACTION");
+        const result = yield database.run("DELETE FROM planets WHERE id=?", req.body.id);
+        if (result.changes !== 0) {
+            yield database.run("COMMIT TRANSACTION");
+            res.status(200).json({ message: "Deleted Planet" });
+            return;
+        }
+        else {
+            yield database.run("ROLLBACK TRANSACTION");
+            res.status(500).json({ error: "Något i databasen gick fel" });
+            return;
+        }
     }
-    else {
+    catch (error) {
         yield database.run("ROLLBACK TRANSACTION");
-        res.status(409).send("Databas problem, kunde inte ta bort");
+        res.status(500).json({ error: "Databas problem igen" });
+        return;
     }
 }));
 app.post("/login", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {

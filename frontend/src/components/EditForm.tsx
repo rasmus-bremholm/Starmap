@@ -68,7 +68,7 @@ export default function EditForm(action: EditActionProps) {
 							throw new Error(`Server error: ${response.status}`);
 						}
 					} catch (error) {
-						console.error("Failed to create planet", error);
+						console.error("Failed to edit planet", error);
 					}
 				}
 				break;
@@ -103,7 +103,7 @@ export default function EditForm(action: EditActionProps) {
 							throw new Error(`Server error: ${response.status}`);
 						}
 					} catch (error) {
-						console.error("Failed to create planet", error);
+						console.error("Failed to delete planet", error);
 					}
 				}
 				break;
