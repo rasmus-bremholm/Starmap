@@ -113,8 +113,8 @@ export default function EditForm(action: EditActionProps) {
 	useEffect(() => {
 		if (activePlanet) {
 			const getActivePlanetId = planetList?.filter((planet) => planet.title === activePlanet);
-			setActivePlanetId(getActivePlanetId[0].id);
-			console.log(getActivePlanetId[0].id);
+			setActivePlanetId(getActivePlanetId![0].id);
+			console.log(getActivePlanetId![0].id);
 		}
 	}, [activePlanet, planetList]);
 
