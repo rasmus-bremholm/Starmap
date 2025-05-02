@@ -32,6 +32,7 @@ export default function EditForm(action: EditActionProps) {
 	const [planetList, setPlanetList] = useState<PlanetData[]>();
 	const [activePlanet, setActivePlanet] = useState("");
 	const [isDisabled, setIsDisabled] = useState(true);
+	const [activePlanetId, setActivePlanetId] = useState<number | undefined>();
 
 	const [fulRefresh, setFulRefresh] = useState(false);
 
@@ -54,6 +55,22 @@ export default function EditForm(action: EditActionProps) {
 		event.preventDefault();
 		switch (editAction) {
 			case "edit":
+				{
+					try {
+						const response = await fetch(`http://localhost:1337/planet/${planetList?.filter((planet) => planet.title === activePlanet)}`, {
+							method: "PUT",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(planet),
+						});
+						setFulRefresh(!fulRefresh);
+
+						if (!response.ok) {
+							throw new Error(`Server error: ${response.status}`);
+						}
+					} catch (error) {
+						console.error("Failed to create planet", error);
+					}
+				}
 				break;
 			case "add":
 				{
@@ -74,9 +91,29 @@ export default function EditForm(action: EditActionProps) {
 				}
 				break;
 			case "delete":
+				{
+					try {
+						const response = await fetch(`http://localhost:1337/planet/${planetList?.filter((planet) => planet.title === activePlanet)}`, {
+							method: "DELETE",
+							headers: { "Content-Type": "application/json" },
+						});
+						setFulRefresh(!fulRefresh);
+
+						if (!response.ok) {
+							throw new Error(`Server error: ${response.status}`);
+						}
+					} catch (error) {
+						console.error("Failed to create planet", error);
+					}
+				}
 				break;
 		}
 	};
+
+	useEffect(() => {
+		const getActivePlanetId = planetList?.filter((planet) => planet.title === activePlanet);
+		setActivePlanetId(getActivePlanetId[0].id);
+	}, [activePlanet, planetList]);
 
 	useEffect(() => {
 		fetch("http://localhost:1337/planets-list")
@@ -87,7 +124,6 @@ export default function EditForm(action: EditActionProps) {
 	}, [fulRefresh]);
 
 	useEffect(() => {
-		console.log(planet);
 		//Validate inputs
 		if ((planet.title.length > 0 && planet.title !== "default") || planet.desc.length > 0 || planet.population > 0 || planet.temperature) {
 			setIsDisabled(false);
