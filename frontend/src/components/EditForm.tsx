@@ -54,17 +54,20 @@ export default function EditForm(action: EditActionProps) {
 				break;
 			case "add":
 				{
-					fetch(`http://localhost:1337/planet/`, {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({}),
-					})
-						.then((response) => response.json())
-						.then((result) => {
-							console.log(result);
+					try {
+						const response = await fetch(`http://localhost:1337/planet/`, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ planet }),
 						});
-				}
 
+						if (!response.ok) {
+							throw new Error(`Server error: ${response.status}`);
+						}
+					} catch (error) {
+						console.error("Failed to create planet", error);
+					}
+				}
 				break;
 			case "delete":
 				break;
@@ -80,9 +83,12 @@ export default function EditForm(action: EditActionProps) {
 	}, []);
 
 	useEffect(() => {
+		console.log(planet);
 		//Validate inputs
 		if ((planet.title.length > 0 && planet.title !== "default") || planet.desc.length > 0 || planet.population > 0 || planet.temperature) {
 			setIsDisabled(false);
+		} else {
+			setIsDisabled(true);
 		}
 	}, [planet]);
 

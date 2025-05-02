@@ -102,11 +102,12 @@ app.post("/reset", (_req, res) => {
     res.status(200).send("Vi resettar planeterna");
 });
 app.post("/planet/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.body) {
-        res.status(400).send("Du måste ha en body");
+    const { system, title, desc, population, diameter, mass, temperature, image } = req.body;
+    if (!system || !title || !desc || !population || !diameter || !mass || !temperature || !image) {
+        return res.status(400).send("Saknar alla fält");
     }
-    else {
-        console.log("Skapar specifik planet");
+    console.log("Skapar specifik planet");
+    try {
         yield database.run("BEGIN TRANSACTION");
         const result = yield database.run("INSERT INTO planets (system, title, desc, population,diameter,mass,temperature, image) VALUES (?,?,?,?,?,?,?,?)", [
             req.body.system,
@@ -120,12 +121,15 @@ app.post("/planet/", (req, res) => __awaiter(void 0, void 0, void 0, function* (
         ]);
         if (result.changes !== 0) {
             yield database.run("COMMIT TRANSACTION");
-            res.status(201).send("Skapat planet");
+            res.status(201).json({ message: "Skapat planet" });
         }
         else {
             yield database.run("ROLLBACK TRANSACTION");
-            res.status(409).send("Databas problem");
+            res.status(500).send("Databas problem");
         }
+    }
+    catch (error) {
+        yield database.run("ROLLBACK TRANSACTION");
     }
 }));
 app.put("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

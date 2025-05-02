@@ -83,10 +83,13 @@ app.post("/reset", (_req: Request, res: Response) => {
 });
 
 app.post("/planet/", async (req: Request, res: Response) => {
-	if (!req.body) {
-		res.status(400).send("Du måste ha en body");
-	} else {
-		console.log("Skapar specifik planet");
+	const { system, title, desc, population, diameter, mass, temperature, image } = req.body;
+	if (!system || !title || !desc || !population || !diameter || !mass || !temperature || !image) {
+		return res.status(400).send("Saknar alla fält");
+	}
+	console.log("Skapar specifik planet");
+
+	try {
 		await database.run("BEGIN TRANSACTION");
 		const result = await database.run("INSERT INTO planets (system, title, desc, population,diameter,mass,temperature, image) VALUES (?,?,?,?,?,?,?,?)", [
 			req.body.system,
@@ -100,11 +103,13 @@ app.post("/planet/", async (req: Request, res: Response) => {
 		]);
 		if (result.changes !== 0) {
 			await database.run("COMMIT TRANSACTION");
-			res.status(201).send("Skapat planet");
+			res.status(201).json({ message: "Skapat planet" });
 		} else {
 			await database.run("ROLLBACK TRANSACTION");
-			res.status(409).send("Databas problem");
+			res.status(500).send("Databas problem");
 		}
+	} catch (error) {
+		await database.run("ROLLBACK TRANSACTION");
 	}
 });
 
