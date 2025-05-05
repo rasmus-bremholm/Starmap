@@ -29,12 +29,12 @@ const EditContainer = styled.div`
 
 export default function EditForm(action: EditActionProps) {
 	const [editAction, setEditAction] = useState(action.action);
-	const [planetList, setPlanetList] = useState<PlanetData[]>();
+	const [planetList, setPlanetList] = useState<PlanetData[]>([]);
 	const [activePlanet, setActivePlanet] = useState("");
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [activePlanetId, setActivePlanetId] = useState<number | undefined>();
 
-	const [fulRefresh, setFulRefresh] = useState(false);
+	const [fulRefresh, setFulRefresh] = useState<Response>();
 
 	// Form Variables
 	const [planet, setPlanet] = useState<PlanetFormData>({
@@ -62,7 +62,7 @@ export default function EditForm(action: EditActionProps) {
 							headers: { "Content-Type": "application/json" },
 							body: JSON.stringify(planet),
 						});
-						setFulRefresh(!fulRefresh);
+						setFulRefresh(response);
 
 						if (!response.ok) {
 							throw new Error(`Server error: ${response.status}`);
@@ -80,7 +80,7 @@ export default function EditForm(action: EditActionProps) {
 							headers: { "Content-Type": "application/json" },
 							body: JSON.stringify(planet),
 						});
-						setFulRefresh(!fulRefresh);
+						setFulRefresh(response);
 
 						if (!response.ok) {
 							throw new Error(`Server error: ${response.status}`);
@@ -98,7 +98,7 @@ export default function EditForm(action: EditActionProps) {
 							headers: { "Content-Type": "application/json" },
 						});
 
-						setFulRefresh(!fulRefresh);
+						setFulRefresh(response);
 
 						if (!response.ok) {
 							throw new Error(`Server error: ${response.status}`);
@@ -116,8 +116,18 @@ export default function EditForm(action: EditActionProps) {
 		// can't access property "id", getActivePlanetId[0] is undefined
 		if (activePlanet) {
 			const getActivePlanetId = planetList?.filter((planet) => planet.title === activePlanet);
-			setActivePlanetId(getActivePlanetId![0].id);
-			console.log(getActivePlanetId![0].id);
+			// Men vad händer i fallen som getActivePlanet är null? Som att vi typ deletar.
+			// Vi behöver kolla en ifsats här och typ
+			if (getActivePlanetId && getActivePlanetId.length > 0) {
+				setActivePlanetId(getActivePlanetId[0].id);
+				console.log(getActivePlanetId![0].id);
+			} else {
+				// Denna triggas alltid på delete.
+				// Men jag får i alla fall inte några errors och planeten deletas som den ska.
+				// Jag skulle behöva sätta om activeplanet tror jag till något som finns. Så kanske en ny filer minus den planeten vi tog bort.
+				setActivePlanet(activePlanet);
+				console.log("Planeten Deletades");
+			}
 		}
 	}, [activePlanet, planetList]);
 
@@ -128,6 +138,8 @@ export default function EditForm(action: EditActionProps) {
 				setPlanetList(result);
 			});
 	}, [fulRefresh]);
+
+	// istället för ful refresh. byt namn på den.
 
 	useEffect(() => {
 		//Validate inputs
