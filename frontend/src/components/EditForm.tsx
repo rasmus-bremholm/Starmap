@@ -7,7 +7,11 @@ interface EditActionProps {
 }
 
 const EditContainer = styled.div`
-	height: 100%;
+	max-width: 600px;
+
+	.form-container {
+		padding: 1rem;
+	}
 
 	form {
 		display: grid;
@@ -23,6 +27,18 @@ const EditContainer = styled.div`
 			display: grid;
 			grid-template-columns: 1fr;
 			grid-template-rows: 1fr 1fr;
+		}
+		.title-container,
+		.desc-container,
+		.population-container,
+		.diameter-container,
+		.mass-container,
+		.temperature-container,
+		.image-container {
+			display: grid;
+			grid-template-columns: 20% auto;
+			justify-items: left;
+			padding-bottom: 1rem;
 		}
 	}
 `;
@@ -154,7 +170,7 @@ export default function EditForm(action: EditActionProps) {
 		<main className='planet-info-container'>
 			<EditContainer>
 				{editAction && <h1>{editAction} Planet</h1>}
-				<div>
+				<div className='form-container'>
 					<form onSubmit={handleSubmit}>
 						{(editAction === "edit" || editAction === "delete") && (
 							<div id='select-planet-container'>

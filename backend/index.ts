@@ -121,6 +121,11 @@ app.post("/planet/", async (req: Request, res: Response): Promise<void> => {
 });
 
 app.put("/planet/:id", async (req: Request, res: Response) => {
+	const planetId = parseInt(req.params.id);
+	if (isNaN(planetId)) {
+		res.status(400).json({ error: "Id felaktigt" });
+		return;
+	}
 	console.log("Uppdaterar specifik planet");
 	try {
 		await database.run("BEGIN TRANSACTION");

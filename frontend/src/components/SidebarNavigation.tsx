@@ -25,7 +25,7 @@ const PlanetsNav = styled.div`
 `;
 
 export default function SidebarNavigation() {
-	const [planetList, setPlanetList] = useState<PlanetData[]>();
+	const [planetList, setPlanetList] = useState<PlanetData[]>([]);
 
 	const storePlanets = (result: PlanetData[]) => {
 		setPlanetList(result);
