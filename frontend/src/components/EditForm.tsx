@@ -97,6 +97,7 @@ export default function EditForm(action: EditActionProps) {
 							method: "DELETE",
 							headers: { "Content-Type": "application/json" },
 						});
+
 						setFulRefresh(!fulRefresh);
 
 						if (!response.ok) {
@@ -111,6 +112,8 @@ export default function EditForm(action: EditActionProps) {
 	};
 
 	useEffect(() => {
+		// Denna failar när vi tar bort en planet, förståligt, men vet inte hur ja ska fixa det.
+		// can't access property "id", getActivePlanetId[0] is undefined
 		if (activePlanet) {
 			const getActivePlanetId = planetList?.filter((planet) => planet.title === activePlanet);
 			setActivePlanetId(getActivePlanetId![0].id);

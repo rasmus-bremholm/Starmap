@@ -153,24 +153,32 @@ app.put("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 }));
 app.delete("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const planetId = parseInt(req.params.id);
+    if (isNaN(planetId)) {
+        res.status(400).json({ error: "Id felaktigt" });
+        return;
+    }
     console.log("Vi tar bort specifik planet");
     try {
         yield database.run("BEGIN TRANSACTION");
-        const result = yield database.run("DELETE FROM planets WHERE id=?", req.body.id);
+        const result = yield database.run("DELETE FROM planets WHERE id=?", [req.params.id]);
         if (result.changes !== 0) {
             yield database.run("COMMIT TRANSACTION");
             res.status(200).json({ message: "Deleted Planet" });
+            console.log("Tog bort planeten");
             return;
         }
         else {
             yield database.run("ROLLBACK TRANSACTION");
             res.status(500).json({ error: "Något i databasen gick fel" });
+            console.log("Rollback");
             return;
         }
     }
     catch (error) {
         yield database.run("ROLLBACK TRANSACTION");
         res.status(500).json({ error: "Databas problem igen" });
+        console.log("Något fel i try catchen");
         return;
     }
 }));
