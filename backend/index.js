@@ -140,16 +140,38 @@ app.post("/planet/", (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 }));
 app.put("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Uppdaterar specifik planet");
-    yield database.run("BEGIN TRANSACTION");
-    const result = yield database.run("UPDATE planets SET (system, title, desc, population,diameter,mass,temperature, image) system=?, title=?, desc=?, population=?, diameter=?, mass=?, temperature=?, image=? WHERE id=?", [req.body.system, req.body.title, req.body.desc, req.body.population, req.body.diameter, req.body.mass, req.body.temperature, req.body.image]);
-    if (result.changes !== 0) {
-        yield database.run("COMMIT TRANSACTION");
-        res.status(200).send("Redigerar planet");
+    const planetId = parseInt(req.params.id);
+    if (isNaN(planetId)) {
+        res.status(400).json({ error: "Id felaktigt" });
+        return;
     }
-    else {
+    console.log("Uppdaterar specifik planet");
+    try {
+        yield database.run("BEGIN TRANSACTION");
+        const result = yield database.run("UPDATE planets SET (system, title, desc, population,diameter,mass,temperature, image) system=?, title=?, desc=?, population=?, diameter=?, mass=?, temperature=?, image=? WHERE id=?", [
+            req.body.system,
+            req.body.title,
+            req.body.desc,
+            req.body.population,
+            req.body.diameter,
+            req.body.mass,
+            req.body.temperature,
+            req.body.image,
+            req.params.id,
+        ]);
+        if (result.changes !== 0) {
+            yield database.run("COMMIT TRANSACTION");
+            res.status(200).json({ message: "Redigerar planet" });
+        }
+        else {
+            yield database.run("ROLLBACK TRANSACTION");
+            res.status(500).json({ error: "Databas problem" });
+        }
+    }
+    catch (error) {
         yield database.run("ROLLBACK TRANSACTION");
-        res.status(409).send("Databas problem, kunde inte uppdatera");
+        res.status(409).json({ error: "Databas problem, kunde inte uppdatera" });
+        return;
     }
 }));
 app.delete("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
