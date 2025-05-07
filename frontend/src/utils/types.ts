@@ -10,6 +10,8 @@ export interface PlanetData {
 	diameter: number;
 	mass: number;
 	temperature: number;
+	// Nytt sen ja provade join
+	system_name?: string;
 }
 
 export interface PlanetsList {

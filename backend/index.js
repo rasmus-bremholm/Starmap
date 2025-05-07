@@ -79,6 +79,7 @@ function mymiddleWare(req, res, next) {
 }
 app.get("/planets-list", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Hämtar planeterna");
+    // Måste skriva om denna med en join så jag får med mitt system.
     const planets = (yield database.all("SELECT * FROM planets"));
     if (planets.length > 0) {
         res.status(200).send(planets);
@@ -89,7 +90,8 @@ app.get("/planets-list", (_req, res) => __awaiter(void 0, void 0, void 0, functi
 }));
 app.get("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Hämtar specifik planet");
-    const planet = (yield database.get("SELECT * FROM planets WHERE id=?", [req.params.id]));
+    const planet = (yield database.get("SELECT planets.id, planets.title, planets.desc, planets.population, planets.diameter, planets.mass, planets.temperature, planets.image, planets.system, systems.name AS system_name FROM planets JOIN systems ON planets.system = systems.id WHERE planets.id=?", [req.params.id]));
+    console.log(planet);
     if (planet) {
         res.status(200).send(planet);
     }

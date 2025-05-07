@@ -38,7 +38,7 @@ export default function PlanetInfo(props: PlanetInfoProps) {
 						</div>
 						<div>
 							<p className='attribute-name'>System Sector: </p>
-							<p className='attribute-value'>{planet?.system}</p>
+							<p className='attribute-value'>{planet?.system_name}</p>
 						</div>
 						<div>
 							<p className='attribute-name'>Diameter: </p>

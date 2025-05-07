@@ -74,8 +74,12 @@ p {
 	font-weight: 400;
 	font-size: 1rem;
 }
-input {
+input,
+select {
 	padding: 0.3rem;
+}
+label {
+	text-transform: capitalize;
 }
 
 /** Planet Stuffs */
