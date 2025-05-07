@@ -1,7 +1,7 @@
 export interface PlanetData {
 	id: number;
 	title: string;
-	system: string;
+	system: number;
 	desc: string;
 	image: string;
 	image_alt: string;
@@ -15,3 +15,5 @@ export interface PlanetData {
 export interface PlanetsList {
 	PlanetData: [];
 }
+
+export type PlanetFormData = Omit<PlanetData, "id">;

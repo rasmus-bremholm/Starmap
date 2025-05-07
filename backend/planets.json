@@ -1,0 +1,20 @@
+[
+	{
+		"title": "test",
+		"description": "Lorem Ipsum",
+		"population": 50000,
+		"diameter": 12000.5,
+		"mass": 6.5e24,
+		"temperature": 20.0,
+		"image": "./default.png"
+	},
+	{
+		"title": "test",
+		"description": "Lorem Ipsum",
+		"population": 50000,
+		"diameter": 12000.5,
+		"mass": 6.5e24,
+		"temperature": 20.0,
+		"image": "./default.png"
+	}
+]

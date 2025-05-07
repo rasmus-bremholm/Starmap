@@ -42,7 +42,7 @@ export default function PlanetInfo(props: PlanetInfoProps) {
 						</div>
 						<div>
 							<p className='attribute-name'>Diameter: </p>
-							<p className='attribute-value'>{planet?.diameter}</p>
+							<p className='attribute-value'>{planet?.diameter} km</p>
 						</div>
 						<div>
 							<p className='attribute-name'>Mass: </p>

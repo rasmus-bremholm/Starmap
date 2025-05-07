@@ -16,17 +16,17 @@ export default function MenuList() {
 	return (
 		<>
 			<Menu>
-				<Link to={"/edit?"}>
+				<Link to={"/edit/edit"}>
 					<div className='link-item'>
 						<span className='material-symbols-outlined'>edit</span>Edit Planet
 					</div>
 				</Link>
-				<Link to={"/edit?"}>
+				<Link to={"/edit/add"}>
 					<div className='link-item'>
 						<span className='material-symbols-outlined'>add</span>Add Planet
 					</div>
 				</Link>
-				<Link to={"/edit?"}>
+				<Link to={"/edit/delete"}>
 					<div className='link-item'>
 						<span className='material-symbols-outlined'>delete</span> Delete Planet
 					</div>

@@ -101,43 +101,107 @@ app.post("/reset", (_req, res) => {
     console.log("Resettar Planeterna");
     res.status(200).send("Vi resettar planeterna");
 });
-app.post("/planet/:id", mymiddleWare, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Testar med promise void....ingen aning längre.
+app.post("/planet/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Incoming planet", req.body);
+    const { system, title, desc, population, diameter, mass, temperature, image } = req.body;
+    if (!system || !title || !desc || !population || !diameter || !mass || !temperature || !image) {
+        res.status(400).json({ message: "Saknar alla fält" });
+        return;
+    }
     console.log("Skapar specifik planet");
-    yield database.run("BEGIN TRANSACTION");
-    const result = yield database.run("INSERT INTO planets (?????) VALUES (?,?)", [req.body.name, req.body.population]);
-    if (result.changes !== 0) {
-        yield database.run("COMMIT TRANSACTION");
-        res.status(201).send("Skapat planet");
+    try {
+        yield database.run("BEGIN TRANSACTION");
+        const result = yield database.run("INSERT INTO planets (system, title, desc, population,diameter,mass,temperature, image) VALUES (?,?,?,?,?,?,?,?)", [
+            req.body.system,
+            req.body.title,
+            req.body.desc,
+            req.body.population,
+            req.body.diameter,
+            req.body.mass,
+            req.body.temperature,
+            req.body.image,
+        ]);
+        if (result.changes !== 0) {
+            yield database.run("COMMIT TRANSACTION");
+            res.status(201).json({ message: "Skapat planet" });
+            return;
+        }
+        else {
+            yield database.run("ROLLBACK TRANSACTION");
+            res.status(500).json({ error: "Databas problem" });
+            return;
+        }
     }
-    else {
+    catch (error) {
         yield database.run("ROLLBACK TRANSACTION");
-        res.status(409).send("Databas problem");
+        res.status(500).json({ error: "Databas problem" });
+        return;
     }
 }));
-app.put("/planet/:id", mymiddleWare, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.put("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const planetId = parseInt(req.params.id);
+    if (isNaN(planetId)) {
+        res.status(400).json({ error: "Id felaktigt" });
+        return;
+    }
     console.log("Uppdaterar specifik planet");
-    yield database.run("BEGIN TRANSACTION");
-    const result = yield database.run("UPDATE planets SET (?,?) name=?, population=? WHERE id=?", [req.body.name]);
-    if (result.changes !== 0) {
-        yield database.run("COMMIT TRANSACTION");
-        res.status(200).send("Redigerar planet");
+    try {
+        yield database.run("BEGIN TRANSACTION");
+        const result = yield database.run("UPDATE planets SET system=?, title=?, desc=?, population=?, diameter=?, mass=?, temperature=?, image=? WHERE id=?", [
+            req.body.system,
+            req.body.title,
+            req.body.desc,
+            req.body.population,
+            req.body.diameter,
+            req.body.mass,
+            req.body.temperature,
+            req.body.image,
+            planetId,
+        ]);
+        if (result.changes !== 0) {
+            yield database.run("COMMIT TRANSACTION");
+            res.status(200).json({ message: "Redigerar planet" });
+        }
+        else {
+            yield database.run("ROLLBACK TRANSACTION");
+            res.status(500).json({ error: "INTERRNAL POINTER VARRRIABLE" });
+        }
     }
-    else {
+    catch (error) {
         yield database.run("ROLLBACK TRANSACTION");
-        res.status(409).send("Databas problem, kunde inte uppdatera");
+        res.status(500).json({ error: "Databas problem, kunde inte uppdatera" });
+        return;
     }
 }));
-app.delete("/planet/:id", mymiddleWare, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Vi tar bort specifik planet");
-    yield database.run("BEGIN TRANSACTION");
-    const result = yield database.run("DELETE FROM planets WHERE id=?", req.body.id);
-    if (result.changes !== 0) {
-        yield database.run("COMMIT TRANSACTION");
-        res.status(200).send("Tagit bort planet");
+app.delete("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const planetId = parseInt(req.params.id);
+    if (isNaN(planetId)) {
+        res.status(400).json({ error: "Id felaktigt" });
+        return;
     }
-    else {
+    console.log("Vi tar bort specifik planet");
+    try {
+        yield database.run("BEGIN TRANSACTION");
+        const result = yield database.run("DELETE FROM planets WHERE id=?", [req.params.id]);
+        if (result.changes !== 0) {
+            yield database.run("COMMIT TRANSACTION");
+            res.status(200).json({ message: "Deleted Planet" });
+            console.log("Tog bort planeten");
+            return;
+        }
+        else {
+            yield database.run("ROLLBACK TRANSACTION");
+            res.status(500).json({ error: "Något i databasen gick fel" });
+            console.log("Rollback");
+            return;
+        }
+    }
+    catch (error) {
         yield database.run("ROLLBACK TRANSACTION");
-        res.status(409).send("Databas problem, kunde inte ta bort");
+        res.status(500).json({ error: "Databas problem igen" });
+        console.log("Något fel i try catchen");
+        return;
     }
 }));
 app.post("/login", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {

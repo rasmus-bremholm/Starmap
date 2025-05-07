@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { PlanetData } from "../utils/types";
 import { Link } from "react-router-dom";
+import { usePlanetContext } from "../utils/planetContext";
 
 const SideBarNav = styled.nav`
 	padding: 1rem;
@@ -25,16 +26,21 @@ const PlanetsNav = styled.div`
 `;
 
 export default function SidebarNavigation() {
-	const [planetList, setPlanetList] = useState<PlanetData[]>();
+	const [planetList, setPlanetList] = useState<PlanetData[]>([]);
+	// Tydligen måste ja ha måsvingar när det inte är en array, annars blir typescript sur.
+	const { shouldRefetch } = usePlanetContext();
+
+	const storePlanets = (result: PlanetData[]) => {
+		setPlanetList(result);
+	};
 
 	useEffect(() => {
 		fetch("http://localhost:1337/planets-list")
 			.then((response) => response.json())
 			.then((result) => {
-				setPlanetList(result);
-				console.log(planetList);
+				storePlanets(result);
 			});
-	}, []);
+	}, [shouldRefetch]);
 
 	return (
 		<SideBarNav>
