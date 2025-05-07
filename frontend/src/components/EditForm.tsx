@@ -28,6 +28,7 @@ const EditContainer = styled.div`
 			display: grid;
 			grid-template-columns: 1fr;
 			grid-template-rows: 1fr 1fr;
+			gap: 0.5rem;
 		}
 		.title-container,
 		.desc-container,
@@ -196,7 +197,7 @@ export default function EditForm(action: EditActionProps) {
 						<div id='select-action-container'>
 							<label htmlFor='select-action'>Change Action</label>
 							{actions.map((action) => (
-								<label key={action} htmlFor={action}>
+								<label className='action-label' key={action} htmlFor={action}>
 									<input
 										type='radio'
 										name='select-action'
@@ -205,7 +206,7 @@ export default function EditForm(action: EditActionProps) {
 										value={action}
 										onChange={(event) => setEditAction(event.target.value)}
 									/>
-									{action}
+									{" " + action}
 								</label>
 							))}
 						</div>

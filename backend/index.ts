@@ -24,6 +24,9 @@ interface PlanetData {
 	diameter: number;
 	mass: number;
 	temperature: number;
+	// nya typer efter joinen.
+	system_id?: number;
+	system_name?: string;
 }
 
 let planetsData = null;
@@ -59,6 +62,7 @@ function mymiddleWare(req: Request, res: Response, next: NextFunction) {
 
 app.get("/planets-list", async (_req: Request, res: Response) => {
 	console.log("Hämtar planeterna");
+	// Måste skriva om denna med en join så jag får med mitt system.
 	const planets = (await database.all("SELECT * FROM planets")) as PlanetData[];
 	if (planets.length > 0) {
 		res.status(200).send(planets);
@@ -69,7 +73,11 @@ app.get("/planets-list", async (_req: Request, res: Response) => {
 
 app.get("/planet/:id", async (req: Request, res: Response) => {
 	console.log("Hämtar specifik planet");
-	const planet = (await database.get("SELECT * FROM planets WHERE id=?", [req.params.id])) as PlanetData;
+	const planet = (await database.get(
+		"SELECT planets.id, planets.title, planets.desc, planets.population, planets.diameter, planets.mass, planets.temperature, planets.image, planets.system, systems.name AS system_name FROM planets JOIN systems ON planets.system = systems.id WHERE planets.id=?",
+		[req.params.id]
+	)) as PlanetData;
+	console.log(planet);
 	if (planet) {
 		res.status(200).send(planet);
 	} else {
