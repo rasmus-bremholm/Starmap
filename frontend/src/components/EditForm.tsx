@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import type { PlanetData, PlanetFormData } from "../utils/types";
+import { usePlanetContext } from "../utils/planetContext";
 
 interface EditActionProps {
 	action: string | undefined;
@@ -49,7 +50,7 @@ export default function EditForm(action: EditActionProps) {
 	const [activePlanet, setActivePlanet] = useState("");
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [activePlanetId, setActivePlanetId] = useState<number | undefined>();
-
+	const { setShouldRefetch } = usePlanetContext();
 	const [fulRefresh, setFulRefresh] = useState<Response>();
 
 	// Form Variables
@@ -66,6 +67,13 @@ export default function EditForm(action: EditActionProps) {
 		texture: "./texture.png",
 	});
 
+	const refetch = (val: boolean) => {
+		// Eftersom jag repeterar mig mycket annars skrev jag en lite funktion för att göra min context refresh.
+		setShouldRefetch(val);
+		// Sätter en timeout så att shouldRefetch sätts till false, ifall ja gör andra ändringar.
+		setTimeout(() => setShouldRefetch(false), 100);
+	};
+
 	const actions = ["edit", "add", "delete"];
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
@@ -79,7 +87,7 @@ export default function EditForm(action: EditActionProps) {
 							body: JSON.stringify(planet),
 						});
 						setFulRefresh(response);
-
+						refetch(true);
 						if (!response.ok) {
 							throw new Error(`Server error: ${response.status}`);
 						}
@@ -96,7 +104,8 @@ export default function EditForm(action: EditActionProps) {
 							headers: { "Content-Type": "application/json" },
 							body: JSON.stringify(planet),
 						});
-						setFulRefresh(response);
+						refetch(true);
+						setShouldRefetch(true);
 
 						if (!response.ok) {
 							throw new Error(`Server error: ${response.status}`);
@@ -115,7 +124,7 @@ export default function EditForm(action: EditActionProps) {
 						});
 
 						setFulRefresh(response);
-
+						refetch(true);
 						if (!response.ok) {
 							throw new Error(`Server error: ${response.status}`);
 						}
@@ -142,7 +151,8 @@ export default function EditForm(action: EditActionProps) {
 				// Men jag får i alla fall inte några errors och planeten deletas som den ska.
 				// Jag skulle behöva sätta om activeplanet tror jag till något som finns. Så kanske en ny filer minus den planeten vi tog bort.
 				setActivePlanet(activePlanet);
-				console.log("Planeten Deletades");
+				// Fick uppdatera texten så att updates också stämmer.
+				console.log("Planeten Ändrades");
 			}
 		}
 	}, [activePlanet, planetList]);

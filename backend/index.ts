@@ -129,30 +129,27 @@ app.put("/planet/:id", async (req: Request, res: Response) => {
 	console.log("Uppdaterar specifik planet");
 	try {
 		await database.run("BEGIN TRANSACTION");
-		const result = await database.run(
-			"UPDATE planets SET (system, title, desc, population,diameter,mass,temperature, image) system=?, title=?, desc=?, population=?, diameter=?, mass=?, temperature=?, image=? WHERE id=?",
-			[
-				req.body.system,
-				req.body.title,
-				req.body.desc,
-				req.body.population,
-				req.body.diameter,
-				req.body.mass,
-				req.body.temperature,
-				req.body.image,
-				req.params.id,
-			]
-		);
+		const result = await database.run("UPDATE planets SET system=?, title=?, desc=?, population=?, diameter=?, mass=?, temperature=?, image=? WHERE id=?", [
+			req.body.system,
+			req.body.title,
+			req.body.desc,
+			req.body.population,
+			req.body.diameter,
+			req.body.mass,
+			req.body.temperature,
+			req.body.image,
+			planetId,
+		]);
 		if (result.changes !== 0) {
 			await database.run("COMMIT TRANSACTION");
 			res.status(200).json({ message: "Redigerar planet" });
 		} else {
 			await database.run("ROLLBACK TRANSACTION");
-			res.status(500).json({ error: "Databas problem" });
+			res.status(500).json({ error: "INTERRNAL POINTER VARRRIABLE" });
 		}
 	} catch (error) {
 		await database.run("ROLLBACK TRANSACTION");
-		res.status(409).json({ error: "Databas problem, kunde inte uppdatera" });
+		res.status(500).json({ error: "Databas problem, kunde inte uppdatera" });
 		return;
 	}
 });

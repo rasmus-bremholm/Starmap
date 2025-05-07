@@ -148,7 +148,7 @@ app.put("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function*
     console.log("Uppdaterar specifik planet");
     try {
         yield database.run("BEGIN TRANSACTION");
-        const result = yield database.run("UPDATE planets SET (system, title, desc, population,diameter,mass,temperature, image) system=?, title=?, desc=?, population=?, diameter=?, mass=?, temperature=?, image=? WHERE id=?", [
+        const result = yield database.run("UPDATE planets SET system=?, title=?, desc=?, population=?, diameter=?, mass=?, temperature=?, image=? WHERE id=?", [
             req.body.system,
             req.body.title,
             req.body.desc,
@@ -157,7 +157,7 @@ app.put("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function*
             req.body.mass,
             req.body.temperature,
             req.body.image,
-            req.params.id,
+            planetId,
         ]);
         if (result.changes !== 0) {
             yield database.run("COMMIT TRANSACTION");
@@ -165,12 +165,12 @@ app.put("/planet/:id", (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         else {
             yield database.run("ROLLBACK TRANSACTION");
-            res.status(500).json({ error: "Databas problem" });
+            res.status(500).json({ error: "INTERRNAL POINTER VARRRIABLE" });
         }
     }
     catch (error) {
         yield database.run("ROLLBACK TRANSACTION");
-        res.status(409).json({ error: "Databas problem, kunde inte uppdatera" });
+        res.status(500).json({ error: "Databas problem, kunde inte uppdatera" });
         return;
     }
 }));
